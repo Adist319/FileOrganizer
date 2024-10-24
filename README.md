@@ -1,23 +1,32 @@
 # File Directory Organizer
 
-A Python-based utility for automatically organizing files in directories based on various criteria like file type, date, or size. Perfect for cleaning up downloads folders, organizing media collections, or maintaining organized project directories.
+A Python utility that automatically organizes files into categorical directories based on their extensions. Features smart directory management, undo functionality, and detailed operation logging.
 
 ## Features
 
-- **Multiple Organization Methods**
-  - By file extension (images, documents, audio, etc.)
-  - By creation date (YYYY/MM structure)
-  - By file size (tiny to huge)
+### Core Functionality
+- Organizes files by type into appropriate directories
+- Creates directories only when needed (no empty folders)
+- Handles file naming conflicts automatically
+- Maintains original file names with numeric suffixes for duplicates
 
-- **Smart Categorization**
-  - Pre-configured categories for common file types
-  - Custom rule support using regex patterns
-  - Miscellaneous category for unmatched files
+### Smart Category Management
+- Pre-configured categories for common file types:
+  - Images (.jpg, .jpeg, .png, .gif, etc.)
+  - Documents (.pdf, .doc, .docx, .txt, etc.)
+  - Audio (.mp3, .wav, .flac, etc.)
+  - Video (.mp4, .avi, .mkv, etc.)
+  - Archives (.zip, .rar, .7z, etc.)
+  - Code (.py, .js, .html, etc.)
+- Custom rule support using regex patterns
+- Miscellaneous category for unmatched files
 
-- **Safe Operations**
-  - Duplicate file handling
-  - Operation logging
-  - Maintains original files' names
+### Undo Functionality
+- Undo last operation
+- Undo all operations
+- Automatic cleanup of empty directories
+- Persistent operation history
+- Detailed operation logging
 
 ## Installation
 
@@ -27,69 +36,131 @@ git clone https://github.com/yourusername/file-organizer.git
 cd file-organizer
 ```
 
-2. No additional dependencies required - uses Python standard library only!
+2. No external dependencies required - uses Python standard library only!
 
-## Quick Start
+## Project Structure
+```
+file-organizer/
+├── file_organizer.py     # Core classes and functionality
+├── main.py              # Command-line interface
+├── .gitignore           # Git ignore rules
+└── README.md            # This file
+```
 
+## Usage
+
+### Basic Usage
 ```python
 from file_organizer import FileOrganizer
 
-# Initialize organizer with target directory
+# Initialize organizer
 organizer = FileOrganizer("/path/to/directory")
-
-# Add any custom rules (optional)
-organizer.add_custom_rule(r'\.log$', 'logs')
 
 # Organize files
 organizer.organize_files()
 ```
 
-Or use from command line:
+### Command Line Interface
+Run the program:
 ```bash
 python main.py
 ```
 
-## Default Categories
+The interactive menu provides options to:
+1. Organize files
+2. Undo last operation
+3. Undo all operations
+4. Show operation history
+5. Add custom rules
+6. Cleanup empty directories
+7. Exit
 
-- **Images**: .jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp
-- **Documents**: .pdf, .doc, .docx, .txt, .rtf, .odt, .xlsx, .csv
-- **Audio**: .mp3, .wav, .flac, .m4a, .aac
-- **Video**: .mp4, .avi, .mkv, .mov, .wmv
-- **Archives**: .zip, .rar, .7z, .tar, .gz
-- **Code**: .py, .js, .html, .css, .java, .cpp, .php
-
-## Adding Custom Categories
-
+### Adding Custom Rules
 ```python
 organizer = FileOrganizer("/path/to/directory")
-organizer.add_extension_category('ebooks', ['.epub', '.mobi', '.azw3'])
+organizer.add_custom_rule(r'\.log$', 'logs')  # Move all .log files to 'logs' directory
 ```
 
-## Size Categories
+### Managing Categories
+```python
+# Add new category
+organizer.add_extension_category('ebooks', ['.epub', '.mobi', '.azw3'])
 
-- Tiny: 0 - 100KB
-- Small: 100KB - 1MB
-- Medium: 1MB - 50MB
-- Large: 50MB - 1GB
-- Huge: > 1GB
+# Get category for a file
+category = organizer.get_category('.pdf')
+```
 
-## Logging
+## Features in Detail
 
-The script generates detailed logs of all operations in the format:
-`file_organizer_YYYYMMDD_HHMMSS.log`
+### Operation Logging
+- Creates timestamped log files
+- Logs all file operations
+- Tracks directory creation and removal
+- Maintains operation history for undo functionality
+
+### Smart Directory Management
+- Only creates directories that will be used
+- Automatically removes empty directories after undo
+- Prevents directory clutter
+- Handles nested directories properly
+
+### History Management
+- Saves operation history to JSON
+- Persists between sessions
+- Allows for operation auditing
+- Supports undo functionality
+
+## Example Workflow
+
+```python
+from file_organizer import FileOrganizer
+
+# Initialize
+organizer = FileOrganizer("~/Downloads")
+
+# Add custom rule for project files
+organizer.add_custom_rule(r'\.project$', 'projects')
+
+# Organize files
+organizer.organize_files()
+
+# Oops! Undo last operation if needed
+organizer.undo_last()
+
+# View operation history
+history = organizer.get_operation_history()
+for entry in history:
+    print(f"Moved {entry['file']} to {entry['to']}")
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Maintain Python standard library independence
+- Add tests for new features
+- Update documentation
+- Follow PEP 8 style guidelines
+
+## Future Development Plans
+
+- More supported file types
+- GUI interface
+- Advanced file type detection
+- Content-based organization
+- Multi-threading support
+- Scheduled organization
+- File type previews
+- Organization templates
 
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-## Future Development Plans
-
-- More supported file categories
-- GUI interface
-- Real-time file monitoring
-- Advanced duplicate detection
-- Content-based organization
-- Multi-threading support for large directories
 
 ## Support
 
